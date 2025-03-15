@@ -1,4 +1,6 @@
-import SpeedGuard from "./components/SpeedGuard"
+import SpeedGuard from "./components/SpeedGuard";
+import "../src/style.css";
+
 
 function App() {
 
