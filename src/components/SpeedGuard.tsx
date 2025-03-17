@@ -1,46 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SpeedInput from "./SpeedInput";
 import SpeedResult from "./SpeedResult";
+import { motion } from "framer-motion";
 
 const SpeedGuard = () => {
-  const [speed, setSpeed] = useState(""); // User speed input
-  const [speedLimit, setSpeedLimit] = useState("50"); // Default limit
+  const [speed, setSpeed] = useState(localStorage.getItem("speed") || "");  // Store last input
+  const [speedLimit, setSpeedLimit] = useState(localStorage.getItem("speedLimit") || "50"); // Store last limit
   const [message, setMessage] = useState(""); // Result message
+
+  // Fetch speed limit from an API (Mock API)
+  useEffect(() => {
+    fetch("https://mock-api.com/speedlimit")
+      .then((res) => res.json())
+      .then((data) => setSpeedLimit(data.limit.toString()))
+      .catch(() => console.log("Using default limit"));
+  }, []);
+
+  // Save to local storage when updated
+  useEffect(() => {
+    localStorage.setItem("speed", speed);
+    localStorage.setItem("speedLimit", speedLimit);
+  }, [speed, speedLimit]);
 
   const handleCheckSpeed = () => {
     const speedValue = Number(speed);
     const limitValue = Number(speedLimit);
 
-    if (!speed || isNaN(speedValue) || speed.trim() === "") {
-      setMessage("Please enter a valid number.");
+    if (isNaN(speedValue) || isNaN(limitValue)) {
+      setMessage("Please enter valid numbers.");
       return;
-  }
+    }
 
-  if (speedValue < 0) {
-      setMessage("Speed can't be negative.");
-      return;
-  }
-
-  if (!speedLimit || isNaN(limitValue) || speedLimit.trim() === "") {
-      setMessage("Please enter a valid speed limit.");
-      return;
-  }
-
-  if (speedValue <= limitValue) {
+    if (speedValue <= limitValue) {
       setMessage("You are within the speed limit.");
-  } else {
+    } else {
       setMessage("You are overspeeding! Slow down.");
-  }
-};
+    }
+  };
 
 const resetForm = () => {
   setSpeed("");
   setSpeedLimit("50");
   setMessage("");
+  localStorage.removeItem("speed");
+    localStorage.removeItem("speedLimit");
 };
 
   return (
-    <div className="p-4 max-w-md mx-auto bg-gray-100 rounded-lg shadow-md">
+    <motion.div
+      className="p-4 max-w-md mx-auto bg-gray-100 rounded-lg shadow-md"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2 className="text-xl font-bold mb-4">Speed Check App</h2>
       <SpeedInput
         speed={speed}
@@ -55,7 +67,7 @@ const resetForm = () => {
         Check Speed
       </button>
       <SpeedResult message={message} />
-    </div>
+      </motion.div>
   );
 };
 
