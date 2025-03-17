@@ -11,17 +11,33 @@ const SpeedGuard = () => {
     const speedValue = Number(speed);
     const limitValue = Number(speedLimit);
 
-    if (isNaN(speedValue) || isNaN(limitValue)) {
-      setMessage("Please enter valid numbers.");
+    if (!speed || isNaN(speedValue) || speed.trim() === "") {
+      setMessage("Please enter a valid number.");
       return;
-    }
+  }
 
-    if (speedValue <= limitValue) {
+  if (speedValue < 0) {
+      setMessage("Speed can't be negative.");
+      return;
+  }
+
+  if (!speedLimit || isNaN(limitValue) || speedLimit.trim() === "") {
+      setMessage("Please enter a valid speed limit.");
+      return;
+  }
+
+  if (speedValue <= limitValue) {
       setMessage("You are within the speed limit.");
-    } else {
+  } else {
       setMessage("You are overspeeding! Slow down.");
-    }
-  };
+  }
+};
+
+const resetForm = () => {
+  setSpeed("");
+  setSpeedLimit("50");
+  setMessage("");
+};
 
   return (
     <div className="p-4 max-w-md mx-auto bg-gray-100 rounded-lg shadow-md">
@@ -31,6 +47,7 @@ const SpeedGuard = () => {
         setSpeed={setSpeed}
         speedLimit={speedLimit}
         setSpeedLimit={setSpeedLimit}
+        resetForm={resetForm}
       />
       <button
         onClick={handleCheckSpeed}

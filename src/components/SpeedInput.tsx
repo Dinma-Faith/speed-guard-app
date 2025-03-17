@@ -3,12 +3,13 @@ interface SpeedInputProps {
   setSpeed: (value: string) => void;
   speedLimit: string;
   setSpeedLimit: (value: string) => void;
+  resetForm: () => void;
 }
 
-const SpeedInput = ({ speed, setSpeed, speedLimit, setSpeedLimit }: SpeedInputProps) => {
+const SpeedInput = ({ speed, setSpeed, speedLimit, setSpeedLimit,resetForm }: SpeedInputProps) => {
   return (
     <div>
-      <label className="block font-semibold">Enter Speed (km/h):</label>
+      <label className="block font-semibold">Set Speed Limit (km/h):</label>
       <input
         type="number"
         value={speed}
@@ -23,8 +24,15 @@ const SpeedInput = ({ speed, setSpeed, speedLimit, setSpeedLimit }: SpeedInputPr
         value={speedLimit}
         onChange={(e) => setSpeedLimit(e.target.value)}
         placeholder="Set speed limit"
-        className="border p-2 rounded w-full"
+        className="border p-2 rounded w-full mb-3"
       />
+
+<button
+        onClick={resetForm}
+        className="bg-gray-500 text-white px-4 py-2 rounded mt-3 w-full"
+      >
+        Reset
+      </button>
     </div>
   );
 };
